@@ -1,63 +1,97 @@
-import random
-import time
+# Declaro que este código foi elaborado por mim de forma individual e não contém nenhum
+# trecho de código de outro colega ou de outro autor, tais como provindos de livros e
+# apostilas, e páginas ou documentos eletrônicos da Internet (como por exemplo códigos gerados por IA).
+# Qualquer trecho de código de outra autoria que não a minha está destacado com uma citação para o autor e a fonte
+# do código, e estou ciente que estes trechos não serão considerados para fins de avaliação.
 
-loop_jogo = True 
+import random
+import os
+
+def limpar():
+    os.system('cls')
 
 def criar_tabuleiro():
-    tabuleiro = []
-    for i in range (15):
-        linha = ['🟨'] * 15
-        tabuleiro.append(linha)
+    matriz = []
 
-    return tabuleiro
+    for l in range(15):
+        matriz.append([])
+        for c in range(15):
+            matriz[l].append(0)
+    
+    return matriz
 
-def gerar_frutas(): # Gera coordenadas frutas boas e ruins
+def canvas_tabuleiro(tabuleiro):
+    limpar()
+                
+    for linha in tabuleiro:
+        for num in linha:
+            if num == 0:
+                print('🟨', end=' ')
+            elif num == 1:
+                print('🟩', end=' ')
+            elif num == 2:
+                print('🍎', end=' ')
+            else:
+                print('🧄', end=' ')
+        print()
+    
+def cobra_inicial(tabuleiro):
+    
+    tabuleiro[0][1] = 1
+    tabuleiro[0][0] = 1
+
+    return [[0, 1], [0, 0]], tabuleiro
+
+def gerar_frutas_boas(tabuleiro):
     coordenada_fruta_boa = []
-    coordenada_fruta_ruim = []
 
     for i in range(0,5): # Gera posições frutas boas
-        fruta_boa_linha = random.randint(0, 14)
-        fruta_boa_coluna = random.randint(0, 14)
+            posicao_ocupada = True
 
-        coordenada_fruta_boa.append([fruta_boa_linha, fruta_boa_coluna]) 
-    
-    for i in range(0,5): # Gera posições frutas ruins
-        fruta_ruim_linha = random.randint(0, 14)
-        fruta_ruim_coluna = random.randint(0, 14)
+            while posicao_ocupada == True:
+                fruta_boa_linha = random.randint(0, 14)
+                fruta_boa_coluna = random.randint(0, 14)
 
-        coordenada_fruta_ruim.append([fruta_ruim_linha, fruta_ruim_coluna])
-    
-    return coordenada_fruta_boa , coordenada_fruta_ruim
+                if tabuleiro[fruta_boa_linha][fruta_boa_coluna] == 0:
+                    tabuleiro[fruta_boa_linha][fruta_boa_coluna] = 2
+                    posicao_ocupada = False
+        
+    return coordenada_fruta_boa
 
-def jogo_principal(): 
-    frutas_boas , frutas_ruins = gerar_frutas()
+def gerar_frutas_ruins(tabuleiro):
+    coordenada_fruta_ruins = []
+
+    for i in range(0,5): # Gera posições frutas boas
+        posicao_ocupada = True
+
+        while posicao_ocupada == True:
+            fruta_ruim_linha = random.randint(0, 14)
+            fruta_ruim_coluna = random.randint(0, 14)
+
+            if tabuleiro[fruta_ruim_linha][fruta_ruim_coluna] == 0:
+                tabuleiro[fruta_ruim_linha][fruta_ruim_coluna] = 3
+                posicao_ocupada = False
+
+    return coordenada_fruta_ruins
+
+def mover_cobra(posicao_cobra, tabuleiro):
+
+    if mover == 'D':
+
+
+def jogo_principal():
     tabuleiro = criar_tabuleiro()
-    cobra = [[0,0],[0,1]]
-    direcao = [0,1] # Direita
+    posicao_cobra, tabuleiro = cobra_inicial(tabuleiro)
+    frutas_boas = gerar_frutas_boas(tabuleiro)
+    frutas_ruins = gerar_frutas_ruins(tabuleiro)
 
-    # while loop_jogo: 
-    for coordenada in frutas_boas: # Inserção fruta boa no tabuleiro
-        linha = coordenada[0]
-        coluna = coordenada[1]
+    game_over = False
 
-        tabuleiro[linha][coluna] = '🍎'
+    while not game_over == True:
+        canvas = canvas_tabuleiro(tabuleiro)
+        mover = mover_cobra(posicao_cobra, tabuleiro)
 
-    for coordenada in frutas_ruins: # Inserção fruta ruins no tabuleiro
-        linha = coordenada[0]
-        coluna = coordenada[1]
+        mover_teste = input('Mova com D/A/W/S: ')
 
-        tabuleiro[linha][coluna] = '🧄'
-    
-    for coordenada in cobra: # Inserção cobra no tabuleiro
-        linha = coordenada[0]
-        coluna = coordenada[1]
-
-        if coordenada == cobra[-1]:
-            tabuleiro[linha][coluna] = '🐲'
-        else: 
-            tabuleiro[linha][coluna] = '🟩'
-
-    for linha in tabuleiro:
-        print(' '.join(linha))
 
 jogo_principal()
